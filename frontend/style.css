@@ -1,0 +1,14 @@
+
+body::after {
+	content: "";
+	position: fixed;
+	z-index: -1;
+	left: 0;
+	background: rgb(255,255,255);
+	background: linear-gradient(0deg, rgba(255,255,255,1) 64%, rgba(127,233,255,1) 79%, rgba(82,166,255,1) 90%, rgba(0,34,255,1) 100%);
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-size: cover;
+	background-repeat: no-repeat;
+  }
