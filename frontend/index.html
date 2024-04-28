@@ -7,47 +7,101 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-	<link rel="shortcut icon" href="resources/favicon.ico">
+	<link rel="shortcut icon" href="resources/favicon.png">
 	<link rel="stylesheet" href="style.css" />
 
-	<title>Sierra Competitive Programming Exhibition</title>
+	<title>CodeForces Problem Recommender</title>
 </head>
 
 
 
 <body style="font-family:jetbrainsMono">
 	<br><br>
-	<div class="row">
-		<div class="col-md-3 text-center">
-			<button type="button" class="btn btn-primary btn-lg">Daily Problem</button>
+	<div id="index">
+		<div class="row">
+			<div class="col-md-3 text-center">
+				<button type="button" class="btn btn-primary btn-lg">Daily Problem</button>
+			</div>
+			<div class="col-md-1"></div>
+			<div class="col-md-4 text-center">
+				<img src="resources/CFLogo.png" class="img-fluid" alt="CodeForces Problem Recommender">
+			</div>
+			<div class="col-md-1"></div>
+			<div class="col-md-3 text-center">
+				<button type="button" class="btn btn-primary btn-lg">Login/Sign up</button>
+			</div>
 		</div>
-		<div class="col-md-6 text-center">
-			<img src="resources/CFLogo.png" width="304"> 
-		</div>
-		<div class="col-md-3 text-center">
-			<button type="button" class="btn btn-primary btn-lg">Login/Sign up</button>
-		</div>
-	  </div>
-
-
-
-	<!-- <div class="container-fluid p-5 text-center text-dark" id="timer">
-		<img class="img-fluid rounded mx-auto d-block" src="resources/contestlogo.png"><br>
-		<h1><b>SIERRA COMPETITIVE PROGRAMMING EXHIBITION</b></h1>
-		<h3>Sierra College Computer Science Club</h3>
-		<br>
-		<h4>April 6, 2024, 9:30AM</h4>
-
-		<p v-if="registrationActive > 0">{{timerOutput}}</p>
-		<p v-if="registrationActive == 0">Thanks for joining SCPE Spring 2024! Check back for the next SCPE!</p>
-		<p v-if="registrationActive == 1">Signups have ended! See you at the contest!</p>
-		<a v-if="registrationActive == 2" href="register" class="btn btn-success text-light">Register</a><br><br>
 		
-		<h5><a href="https://www.hackerrank.com/scpe-spring-2024"></a></h5><br>
-		<h5><a href="https://forms.gle/DWxcM4bUyhs7qCW1A"></a></h5>
-	</div> -->
+		<br>
+
+		<div class="row">
+			<div class="col-md-3 text-center">
+				<button @click="submit" type="button" class="btn btn-primary btn-lg">Auto-Recommend</button>
+			</div>
+			<div class="col-md-3 text-center">
+				<button type="button" class="btn btn-primary btn-lg">Recommend a problem</button>
+			</div>
+			<div class="col-md-2">
+				<input v-model="low" type="number" class="form-control" placeholder="Lowest rating">
+			</div>
+			<div class="col-md-2">
+				<input v-model="high" type="number" class="form-control" placeholder="Highest rating">
+			</div>
+			<div class="col-md-2 text-center">
+				<button data-bs-toggle="collapse" data-bs-target="#tagsdropdown" type="button" class="btn btn-primary btn-lg">Show tags</button>
+			</div>
+			
+		</div>
+
+		<br>
+
+		<!-- <div id="tagsdropdown" class="collapse"></div> -->
+		<div id="tagsdropdown" class="collapse" v-html="tagsHTML"></div>
+
+		<!-- <div class="row"><div class="col"></div>
+			<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"><label class="form-check-label" for="flexCheckDefault">chinese remainder theorem</label></div></div>
+			<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"><label class="form-check-label" for="flexCheckDefault">chinese remainder theorem</label></div></div>
+			<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"><label class="form-check-label" for="flexCheckDefault">chinese remainder theorem</label></div></div>
+			<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"><label class="form-check-label" for="flexCheckDefault">chinese remainder theorem</label></div></div>
+			<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"><label class="form-check-label" for="flexCheckDefault">chinese remainder theorem</label></div></div>
+			<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"><label class="form-check-label" for="flexCheckDefault">chinese remainder theorem</label></div></div>
+		<div class="col"></div></div> -->
 
 
+
+		<!-- <div class="row">
+			<div class="col-md-3 text-center">
+				<button type="button" class="btn btn-primary btn-lg">Recommend a Problem</button>
+			</div>
+			<div class="col-md-1"></div>
+			<div class="col-md-4 text-center">
+				<img src="resources/CFLogo.png" class="img-fluid" alt="CodeForces Problem Recommender">
+			</div>
+			<div class="col-md-1"></div>
+			<div class="col-md-3 text-center">
+				<button type="button" class="btn btn-primary btn-lg">Login/Sign up</button>
+			</div>
+		</div> -->
+
+
+
+		<!-- <div class="container-fluid p-5 text-center text-dark" id="timer">
+			<img class="img-fluid rounded mx-auto d-block" src="resources/contestlogo.png"><br>
+			<h1><b>SIERRA COMPETITIVE PROGRAMMING EXHIBITION</b></h1>
+			<h3>Sierra College Computer Science Club</h3>
+			<br>
+			<h4>April 6, 2024, 9:30AM</h4>
+
+			<p v-if="registrationActive > 0">{{timerOutput}}</p>
+			<p v-if="registrationActive == 0">Thanks for joining SCPE Spring 2024! Check back for the next SCPE!</p>
+			<p v-if="registrationActive == 1">Signups have ended! See you at the contest!</p>
+			<a v-if="registrationActive == 2" href="register" class="btn btn-success text-light">Register</a><br><br>
+			
+			<h5><a href="https://www.hackerrank.com/scpe-spring-2024"></a></h5><br>
+			<h5><a href="https://forms.gle/DWxcM4bUyhs7qCW1A"></a></h5>
+		</div> -->
+
+	</div>
 </body>
-<script src="resources/index.js"></script>
+<script src="index.js"></script>
 </html>
