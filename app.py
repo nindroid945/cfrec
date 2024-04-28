@@ -1,5 +1,6 @@
 from Recommend import smart_recommend, pub_recommend
 import Search
+import Random
 from flask import Flask, request, jsonify, render_template
 import propelauth_flask as propel
 
@@ -40,6 +41,18 @@ def apismartrecommend():
 	# print(handle)
 
 	response = jsonify(smart_recommend(handle))
+	response.headers.add('Access-Control-Allow-Origin', '*')
+	return response
+
+@app.route("/api/daily/")
+def daily():
+	Random.daily()
+	print(request.headers)
+	rating = int(request.headers['Rating'])
+	tags = set(request.headers['Tags'].lower().split(";"))
+	num = 5
+
+	response = jsonify(pub_recommend(rating, tags, num))
 	response.headers.add('Access-Control-Allow-Origin', '*')
 	return response
 
