@@ -6,7 +6,7 @@ def main():
     rating = 800
     tags = {'math', 'implementation'}
     num_rec = 3
-    problems = Recommend.recommend(rating, tags, num_rec)
+    problems = Recommend.pub_recommend(rating, tags, num_rec)
     for p in problems:
         print(p)
         print(Recommend.get_link(p))
