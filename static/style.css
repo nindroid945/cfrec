@@ -1,0 +1,19 @@
+@font-face {
+	font-family: "jetbrainsMono";
+	src: url(JetBrainsMono-Light.ttf);
+	font-display: swap;
+}
+
+body::after {
+	content: "";
+	position: fixed;
+	z-index: -1;
+	left: 0;
+	background: rgb(255,255,255);
+	background: linear-gradient(0deg, rgba(255,255,255,1) 77%, rgba(127,233,255,1) 90%, rgba(82,219,255,1) 100%);
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-size: cover;
+	background-repeat: no-repeat;
+  }
