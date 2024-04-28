@@ -1,65 +1,50 @@
 const maze = new Vue({
-	el: '#puzzle',
+	el: '#index',
 	data: {
-		mazes:[],
-		explanations:[],
-		index:0,
-		secondArray:[0,1,2,3,4,9,12,14],
-
-		currentMaze:"",
-		currentExplanation:"",
-		
-		input:"",
-		response:"Enter your answer above.",
+		tags:['2-sat', 'Binary search', 'Bitmasks', 'Brute force', 'Chinese remainder theorem', 'Combinatorics', 'Constructive algorithms', 'Data structures', 'DFS and similar', 'Divide and conquer', 'DP', 'DSU', 'Expression parsing', 'FFT', 'Flows', 'Games', 'Geometry', 'Graph matchings', 'Graphs', 'Greedy', 'Hashing', 'Implementation', 'Interactive', 'Math', 'Matrices', 'Meet-in-the-middle', 'Number theory', 'Probabilities', 'Schedules', 'Shortest paths', 'Sortings', 'String suffix structures', 'Strings', 'Ternary search', 'Trees', 'Two pointers'],
+		tagsHTML:"",
+		low:"",
+		high:"",
 	},
 	computed: {
 		lowest(){
 			return this.index==0
 		},
-		highest(){
-			return this.index==this.mazes.length-1
-		},
 	},
 	methods: {
-		setOutputs(){
-			this.currentMaze = this.mazes[this.index];
-			this.currentExplanation = this.explanations[this.index];
+		toTagFormat(string) {
+			return string.toLowerCase().replace(" ", "-")
 		},
-		submit(){
-			this.response = (hashCode(this.input.trim())==mazeAnswer) ? "That's the correct answer!" : "Not quite. Try again."
+		generateSingleTagRow(startIdx) {
+			let res = ''
+			res += '<div class="row"><div class="col"></div>'
+			for (let i=startIdx; i<startIdx+6; i++)
+				res += '<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="'+this.toTagFormat(this.tags[i])+'"><label class="form-check-label" for="'+this.toTagFormat(this.tags[i])+'">'+this.tags[i]+'</label></div></div>'
+			res += '<div class="col"></div></div>\n'
+			return res
 		},
-		next(){
-			if (this.index<this.mazes.length-1) ++this.index;
-			this.setOutputs()
+		generateTags() {
+			res = ""
+			for (let i=0; i<36; i+=6) res += this.generateSingleTagRow(i)
+			return res
 		},
-		prev(){
-			if (this.index>0) --this.index;
-			this.setOutputs()
+		getQuery() {
+			for (let i=0; i<36; i++) {
+				let checkedValue = document.querySelector('.'+this.toTagFormat(this.tags[i])+':checked').value;
+				console.log(this.tags[i]+": "+checkedValue)
+			}
+		},
+		validateQuery() {
+
+		},
+		submit() {
+			console.log("Submit pressed!")
+			
 		},
 	},
 	mounted: function() {
-		this.mazes.push("# # # # # # #\n# A . . . P #\n# P # # # # #\n# . . P . B #\n# # # # # # #")
-		this.explanations.push("Here's the maze at the beginning. The mouse, marked M, starts on tile A.\nThe mouse needs to eat all the cheese, marked P- there are many paths it can take.")
-		this.mazes.push("# # # # # # #\n# A M . . P #\n# P # # # # #\n# . . P . B #\n# # # # # # #")
-		this.explanations.push("Although the cheese right below A is closer, it is more optimal to first collect the cheese at the top left.")
-		this.mazes.push("# # # # # # #\n# A . M . P #\n# P # # # # #\n# . . P . B #\n# # # # # # #")
-		this.explanations.push("The mouse moves to the right.")
-		this.mazes.push("# # # # # # #\n# A . . M P #\n# P # # # # #\n# . . P . B #\n# # # # # # #")
-		this.explanations.push("The mouse moves to the right.")
-		this.mazes.push("# # # # # # #\n# A . . . M #\n# P # # # # #\n# . . P . B #\n# # # # # # #")
-		this.explanations.push("The mouse collects the first cheese, and turns back to get all the others.")
-		this.mazes.push("# # # # # # #\n# A . . . . #\n# M # # # # #\n# . . P . B #\n# # # # # # #")
-		this.explanations.push("The mouse then moves leftward, to collect the cheese in the middle row. Some seconds are skipped for conciseness.")
-		this.mazes.push("# # # # # # #\n# A . . . . #\n# . # # # # #\n# . . M . B #\n# # # # # # #")
-		this.explanations.push("The mouse collects the third piece of cheese. It is then ready to reach the goal.")
-		this.mazes.push("# # # # # # #\n# A . . . . #\n# . # # # # #\n# . . . . M #\n# # # # # # #")
-		this.explanations.push("The goal is reached after 14 seconds. Therefore, 14 would be the answer to this maze.")
-
-		//maybe looks better? idk
-		for (var i = 0; i < this.mazes.length; ++i) this.mazes[i] = this.mazes[i].replaceAll(" ", "")
-		this.index = 0
-		this.setOutputs()
-
+		console.log(window.location.href.split("?"))
+		this.tagsHTML = this.generateTags()
 	}
 });
  
