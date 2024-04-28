@@ -1,4 +1,9 @@
-const maze = new Vue({
+const authClient = PropelAuth.createClient({
+	authUrl: "https://69808087.propelauthtest.com",
+	enableBackgroundTokenRefresh: true,
+});
+
+const homepage = new Vue({
 	el: '#index',
 	data: {
 		tags:['2-sat', 'Binary search', 'Bitmasks', 'Brute force', 'Chinese remainder theorem', 'Combinatorics', 'Constructive algorithms', 'Data structures', 'DFS and similar', 'Divide and conquer', 'DP', 'DSU', 'Expression parsing', 'FFT', 'Flows', 'Games', 'Geometry', 'Graph matchings', 'Graphs', 'Greedy', 'Hashing', 'Implementation', 'Interactive', 'Math', 'Matrices', 'Meet-in-the-middle', 'Number theory', 'Probabilities', 'Schedules', 'Shortest paths', 'Sortings', 'String suffix structures', 'Strings', 'Ternary search', 'Trees', 'Two pointers'],
@@ -8,6 +13,8 @@ const maze = new Vue({
 		recommendResponse:"",
 		recommendedProblemLink:"",
 		opponent:"",
+		loginButtonText:"Login/Signup",
+		loggedIn:false,
 	},
 	computed: {
 		lowest(){
@@ -56,23 +63,34 @@ const maze = new Vue({
 		getSmartRecommendation(username) {
 			let text = ""
 			text += "Recommended problems: "
-			let url = "http://127.0.0.1:5000/api/smartrecommend/"+username
+			let url = "http://localhost:5000/api/smartrecommend/"+username
 
 			let vue = this
 
-			fetch(url).then(function(res) {
-				res.json().then(res=>{
-					console.log(res)
-					for (let i=0; i<res.length; i++) {
-						text += '<a href="'+res[i].url+'">'+res[i].name+" ("+res[i].rating+')</a> '
-						// console.log(res[i].url)
+			authClient.getAuthenticationInfoOrNull().then((authInfo)=>{
+				if (!authInfo) return
+				fetch(url, {
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${authInfo.accessToken}`
 					}
-
-					vue.recommendedProblemLink = text
-					console.log(text)
-					return text
+				}).then(function(res) {
+					res.json().then(res=>{
+						console.log(res)
+						for (let i=0; i<res.length; i++) {
+							text += '<a href="'+res[i].url+'">'+res[i].name+" ("+res[i].rating+')</a> '
+							// console.log(res[i].url)
+						}
+	
+						vue.recommendedProblemLink = text
+						console.log(text)
+						return text
+					})
 				})
 			})
+
+
+			
 		},
 		autoRecommend() {
 			// let problemLink = ""
@@ -84,16 +102,22 @@ const maze = new Vue({
 			this.getSmartRecommendation("jasonfeng365")
 		},
 		manualRecommend() {
-			// this.recommendedProblemLink+="12"
+			// console.log("Manual rec")
 			if (!this.validateQuery()) return;
 
-			this.recommendedProblemLink = "69420"
+			// this.recommendedProblemLink = "69420"
 			
 		},
 	},
 	mounted: function() {
-		console.log(window.location.href.split("?"))
+		// console.log(window.location.href.split("?"))
 		this.tagsHTML = this.generateTags()
+
+		authClient.getAuthenticationInfoOrNull().then((authInfo)=>{
+			if (!authInfo) return
+			this.loggedIn = true
+			this.loginButtonText = "Welcome!"
+		})
 	}
 });
  
