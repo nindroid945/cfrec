@@ -83,7 +83,7 @@ def smart_recommend(handle: str) -> list:
                 out.append(toadd)
     return out
         
-def recommend(rating: int, tags: set, num: int):
+def pub_recommend(rating: int, tags: set, num: int):
     # The API endpoint
     # A GET request to the API
     response = requests.get("https://codeforces.com/api/problemset.problems?")
