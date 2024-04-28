@@ -12,62 +12,40 @@
 
 	<title>Sierra Competitive Programming Exhibition</title>
 </head>
-<body>
 
 
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark tec">
-	<div class="container-fluid">
-		<a class="navbar-brand">
-			<img src="resources/CFLogo.png" style="width:40px;"> 
-		</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="collapsibleNavbar">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link active" href="">HOME</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="info">INFO</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="in-person">IN-PERSON</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="virtual">VIRTUAL</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="register">REGISTER</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="csclub">CS CLUB</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="past-events">PAST EVENTS</a>
-				</li>
-			</ul>
+
+<body style="font-family:jetbrainsMono">
+	<br><br>
+	<div class="row">
+		<div class="col-md-3 text-center">
+			<button type="button" class="btn btn-primary btn-lg">Daily Problem</button>
 		</div>
-	</div>
-</nav>
+		<div class="col-md-6 text-center">
+			<img src="resources/CFLogo.png" width="304"> 
+		</div>
+		<div class="col-md-3 text-center">
+			<button type="button" class="btn btn-primary btn-lg">Login/Sign up</button>
+		</div>
+	  </div>
 
 
 
-<div class="container-fluid p-5 text-center text-dark" id="timer">
-	<img class="img-fluid rounded mx-auto d-block" src="resources/contestlogo.png"><br>
-	<h1><b>SIERRA COMPETITIVE PROGRAMMING EXHIBITION</b></h1>
-	<h3>Sierra College Computer Science Club</h3>
-	<br>
-	<h4>April 6, 2024, 9:30AM</h4>
+	<!-- <div class="container-fluid p-5 text-center text-dark" id="timer">
+		<img class="img-fluid rounded mx-auto d-block" src="resources/contestlogo.png"><br>
+		<h1><b>SIERRA COMPETITIVE PROGRAMMING EXHIBITION</b></h1>
+		<h3>Sierra College Computer Science Club</h3>
+		<br>
+		<h4>April 6, 2024, 9:30AM</h4>
 
-	<p v-if="registrationActive > 0">{{timerOutput}}</p>
-	<p v-if="registrationActive == 0">Thanks for joining SCPE Spring 2024! Check back for the next SCPE!</p>
-	<p v-if="registrationActive == 1">Signups have ended! See you at the contest!</p>
-	<a v-if="registrationActive == 2" href="register" class="btn btn-success text-light">Register</a><br><br>
-	
-	<h5><a href="https://www.hackerrank.com/scpe-spring-2024"></a></h5><br>
-	<h5><a href="https://forms.gle/DWxcM4bUyhs7qCW1A"></a></h5>
-</div>
+		<p v-if="registrationActive > 0">{{timerOutput}}</p>
+		<p v-if="registrationActive == 0">Thanks for joining SCPE Spring 2024! Check back for the next SCPE!</p>
+		<p v-if="registrationActive == 1">Signups have ended! See you at the contest!</p>
+		<a v-if="registrationActive == 2" href="register" class="btn btn-success text-light">Register</a><br><br>
+		
+		<h5><a href="https://www.hackerrank.com/scpe-spring-2024"></a></h5><br>
+		<h5><a href="https://forms.gle/DWxcM4bUyhs7qCW1A"></a></h5>
+	</div> -->
 
 
 </body>
