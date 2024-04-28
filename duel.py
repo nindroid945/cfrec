@@ -14,7 +14,7 @@ def duel_init(nums = 5, mins = 45, contestRating = 800, user1 = 'guy', user2 = '
     for problem in p:
         ids.append(str(problem['contestId']) + problem["index"])
         solved.append(None)
-        print(problem)
+        # print(problem)
     
     print(ids)
 
@@ -44,8 +44,11 @@ def duel_init(nums = 5, mins = 45, contestRating = 800, user1 = 'guy', user2 = '
         # Reduces total time by one second
         total_seconds -= 1
         interval -= 1
+    
+    duel_check(user1, user2, ids, solved)
+    print("contest has finished!")
 
-def duel_check(user1, user2, ids, solved):
+def duel_check(user1, user2, ids, sol):
     #check for new submission every x seconds, if user1 or user2 is submitter
     response1 = requests.get(f"https://codeforces.com/api/user.status?handle={user1}&from=1&count=1")
     response2 = requests.get(f"https://codeforces.com/api/user.status?handle={user2}&from=1&count=1")
@@ -56,25 +59,28 @@ def duel_check(user1, user2, ids, solved):
     # print(ids[0])
     # print(rdict[0]['verdict'])
     for i in range(len(ids)):
-        if (str(rdict1[0]['problem']['contestId']) + str(rdict1[0]['problem']['index'])) == str(ids[i]) and rdict1[0]['verdict'] == "OK":
-            if solved[i] == 1:
+        if (str(rdict1[0]['problem']['contestId']) + str(rdict1[0]['problem']['index'])) == str(ids[i]) and rdict1[0]['verdict'] == "COMPILATION_ERROR":
+            if sol[i] == 1:
                 print("this shit alr solved brother. by ur opp!")
             else:
                 print("user1 has solved a problem!")
-                solved[i] = 0
+                sol[i] = 0
         else:
-            print("user1 fail at problem " + str(i))
+            print(f"{user1} fail at problem " + str(i))
         
-        if (str(rdict2[0]['problem']['contestId']) + str(rdict2[0]['problem']['index'])) == str(ids[i]) and rdict2[0]['verdict'] == "OK":
-            if solved[i] == 0:
+        if (str(rdict2[0]['problem']['contestId']) + str(rdict2[0]['problem']['index'])) == str(ids[i]) and rdict2[0]['verdict'] == "TIME_LIMIT_EXCEEDED":
+            if sol[i] == 0:
                 print("this shit alr solved brother. by ur opp!")
             else:
                 print("user2 has solved a problem!")
-                solved[i] = 1
+                sol[i] = 1
         else:
-            print("user2 fail at problem " + str(i))
+            print(f"{user2} fail at problem " + str(i))
+    
+    print("solved: ")
+    print(sol)
 
-duel_init(5, 1, 800, 'nindroid945', 'flashwhite')
+duel_init(5, 0.5, 800, 'nindroid945', 'flashwhite')
 # codes = ['1454B', '104064G', '263A', '344A', '599A']
-# sol = [1, 0, None, None, None]
+# sol = [None, None, None, None, None]
 # duel_check('nindroid945', 'flashwhite', codes, sol)
