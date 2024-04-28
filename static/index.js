@@ -87,6 +87,19 @@ const homepage = new Vue({
 
 			
 		},
+		daily() {
+			let url = "http://localhost:5000/api/daily/"
+			let vue = this
+
+			fetch(url).then(function(res) {
+				res.json().then(res=>{
+					res = res
+					console.log(res)
+
+					vue.recommendedProblemLink = 'Daily problem: <a href="'+res.url+'">'+res.name+" ("+res.rating+')</a>'
+				})
+			})
+		},
 		manualRecommend() {
 			if (!this.validateQuery()) return;
 
