@@ -29,7 +29,6 @@
 			<div class="col-md-1"></div>
 			<div class="col-md-3 text-center">
 				<a href="https://69808087.propelauthtest.com" class="btn btn-primary btn-lg"><span v-html="loginButtonText"></span></a>
-				<!-- <button type="button" class="btn btn-primary btn-lg">Login/Sign up</button> -->
 			</div>
 		</div>
 		
@@ -40,16 +39,13 @@
 				<button v-if="loggedIn" @click="autoRecommend" type="button" class="btn btn-primary btn-lg">Auto-Recommend</button>
 				<button v-if="!loggedIn" @click="autoRecommend" type="button" class="btn btn-primary btn-lg" disabled>Auto-Recommend</button>
 			</div>
+			<div class="col-md-2"></div>
 			<div class="col-md-3 text-center">
 				<button @click="manualRecommend" type="button" class="btn btn-primary btn-lg">Recommend a problem</button><br>
 				<span v-html="recommendResponse"></span>
-				<!-- {{recommendResponse}} -->
 			</div>
 			<div class="col-md-2">
-				<input v-model="low" type="number" class="form-control" placeholder="Lowest rating">
-			</div>
-			<div class="col-md-2">
-				<input v-model="high" type="number" class="form-control" placeholder="Highest rating">
+				<input v-model="rating" type="number" class="form-control" placeholder="Rating">
 			</div>
 			<div class="col-md-2 text-center">
 				<button data-bs-toggle="collapse" data-bs-target="#tagsdropdown" type="button" class="btn btn-success btn-lg">Show tags</button>
@@ -68,14 +64,14 @@
 
 		<br>
 		<div class="row">
-			<div class="col text-center">
+			<div class="col-md-3 text-center">
 				<button type="button" class="btn btn-dark btn-lg">Campaign</button>
 			</div>
-			<div class="col text-center"></div>
-			<div class="col text-center">
+			<div class="col-md-4 text-center"></div>
+			<div class="col-md-2 text-center">
 				<input v-model="opponent" class="form-control" placeholder="Opponent's username">
 			</div>
-			<div class="col text-center">
+			<div class="col-md-3 text-center">
 				<button type="button" class="btn btn-dark btn-lg">Duel</button>
 			</div>
 		</div>

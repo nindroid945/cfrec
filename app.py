@@ -10,22 +10,27 @@ def home():
 	return render_template("homepage.html")
 
 # def recommend(rating: int, tags: set, num: int):
-@app.route("/api/recommend")
+@app.route("/api/recommend/")
 def recommend():
 	print(request.headers)
-	rating = request.headers['rating']
-	tags = request.headers['tags']
-	num = request.headers['num']
+	rating = int(request.headers['Rating'])
+	tags = set(request.headers['Tags'].lower().split(";"))
+	num = 5
 
 	response = jsonify(pub_recommend(rating, tags, num))
+	# response = jsonify(pub_recommend(1100, {"dp"}, 5))
+	# print(pub_recommend(1100, {"dp"}, 5))
 	response.headers.add('Access-Control-Allow-Origin', '*')
 	return response
 
 # def smart_recommend(handle: str) -> list:
-@app.route("/api/smartrecommend/<handle>")
+@app.route("/api/smartrecommend/")
 @auth.require_user
-def smartrecommend(handle):
+def smartrecommend():	
+	# handle = database.getHandleFromPropelID(propel.current_user.user_id)
+	handle = "jasonfeng365"
 	# print(handle)
+
 	response = jsonify(smart_recommend(handle))
 	response.headers.add('Access-Control-Allow-Origin', '*')
 	return response

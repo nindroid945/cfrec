@@ -8,18 +8,15 @@ const homepage = new Vue({
 	data: {
 		tags:['2-sat', 'Binary search', 'Bitmasks', 'Brute force', 'Chinese remainder theorem', 'Combinatorics', 'Constructive algorithms', 'Data structures', 'DFS and similar', 'Divide and conquer', 'DP', 'DSU', 'Expression parsing', 'FFT', 'Flows', 'Games', 'Geometry', 'Graph matchings', 'Graphs', 'Greedy', 'Hashing', 'Implementation', 'Interactive', 'Math', 'Matrices', 'Meet-in-the-middle', 'Number theory', 'Probabilities', 'Schedules', 'Shortest paths', 'Sortings', 'String suffix structures', 'Strings', 'Ternary search', 'Trees', 'Two pointers'],
 		tagsHTML:"",
-		low:"",
-		high:"",
 		recommendResponse:"",
 		recommendedProblemLink:"",
 		opponent:"",
 		loginButtonText:"Login/Signup",
 		loggedIn:false,
+		rating:"",
 	},
 	computed: {
-		lowest(){
-			return this.index==0
-		},
+		
 	},
 	methods: {
 		toTagFormat(string) {
@@ -44,26 +41,24 @@ const homepage = new Vue({
 			for (let i=0; i<36; i++)
 				if (document.getElementById(this.toTagFormat(this.tags[i])).checked)
 					tags.push(this.tags[i].toLowerCase())
-			return tags
+			return tags.join(";")
 		},
 		validateQuery() {
-			if (this.low == "" || this.high == "") {
-				this.recommendResponse = "Enter a range of problem ratings"
+			if (this.rating == "") {
+				this.recommendResponse = "Enter a problem rating"
 				return false
 			}
-			this.low = Math.round(Number(this.low))
-			this.high = Math.round(Number(this.high))
+			this.rating = Math.round(Number(this.rating))
 
-			if (this.low > this.high) this.recommendResponse = "Highest must be greater than lowest"
-			else if (this.low < 800 || this.high > 3500) this.recommendResponse = "Ratings must be between 800 and 3500"
+			if (this.rating < 800 || this.rating > 3500) this.recommendResponse = "Ratings must be between 800 and 3500"
 			else this.recommendResponse = ""
 
 			return this.recommendResponse == ""
 		},
-		getSmartRecommendation(username) {
+		autoRecommend() {
 			let text = ""
 			text += "Recommended problems: "
-			let url = "http://localhost:5000/api/smartrecommend/"+username
+			let url = "http://localhost:5000/api/smartrecommend/"
 
 			let vue = this
 
@@ -92,21 +87,38 @@ const homepage = new Vue({
 
 			
 		},
-		autoRecommend() {
-			// let problemLink = ""
-			// let rec = this.getSmartRecommendation("jasonfeng365")
-			// console.log(rec)
-			// this.recommendedProblemLink = rec
-			// this.$forceUpdate()
-			// this.recommendedProblemLink = "69420"
-			this.getSmartRecommendation("jasonfeng365")
-		},
 		manualRecommend() {
-			// console.log("Manual rec")
 			if (!this.validateQuery()) return;
 
-			// this.recommendedProblemLink = "69420"
-			
+			let text = ""
+			text += "Recommended problems: "
+
+			let url = "http://localhost:5000/api/recommend/"
+			let vue = this
+
+			fetch(url, {
+				headers: {
+					"Rating": this.rating,
+					"Tags": this.getQueryTags(),
+				}
+			}).then(function(res) {
+				res.json().then(res=>{
+					console.log(res)
+					if (res == "No problems found.") {
+						vue.recommendedProblemLink = res
+						console.log(res)
+						return res
+					}
+					for (let i=0; i<res.length; i++) {
+						text += '<a href="'+res[i].url+'">'+res[i].name+" ("+res[i].rating+')</a> '
+						// console.log(res[i].url)
+					}
+
+					vue.recommendedProblemLink = text
+					console.log(text)
+					return text
+				})
+			})
 		},
 	},
 	mounted: function() {
