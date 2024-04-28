@@ -1,2 +1,2 @@
 # cfrecc
-Codeforces Recommender
+Codeforces Recommender made for HackDavis 2024
