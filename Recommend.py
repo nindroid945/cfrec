@@ -81,7 +81,7 @@ def pub_recommend(rating: int, tags: set, num: int):
             pool.append(problem)
 
     if len(pool) == 0:
-        return "No problems found."
+        return []
     out = []
     while len(out) < min(num, len(pool)):
         toadd = pool[random.randint(0, len(pool)-1)]
