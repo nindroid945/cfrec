@@ -38,6 +38,8 @@ def smart_recommend(handle: str) -> list:
                 else:
                     tag_count[t] = 1
 
+    if len(solved) == 0:
+        return []
     avg_difficulty = tot_difficulty // len(solved)
     #print(f"{handle}'s average difficulty solved is {avg_difficulty}")
 

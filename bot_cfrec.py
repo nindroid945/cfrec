@@ -12,6 +12,9 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
 
+# Local Libraries
+import Recommend
+
 load_dotenv()
 
 # BOT_ID = int(os.getenv('BOT_ID'))
@@ -23,6 +26,7 @@ con = cursor = run_time = None
 bot = commands.Bot(command_prefix='$', owner_id = MY_ID, intents=discord.Intents.all())
 
 def start_bot():
+	global con, cursor
 	con = sqlite3.connect("users.db")
 	cursor = con.cursor()
 	cursor.row_factory = sqlite3.Row
@@ -232,8 +236,7 @@ WHERE discord_id='{interaction.user.id}'
 
 
 @bot.tree.command(name="recommend", description="Recommends a list of problems for you to try next.")
-@app_commands.describe(count="Number of problems to recommend (Default 5).")
-async def recommend(interaction: discord.Interaction, count: int = 5):
+async def recommend(interaction: discord.Interaction):
 	on_command(interaction)
 
 	check_exists = f"""
@@ -247,7 +250,18 @@ WHERE discord_id='{interaction.user.id}'
 		await interaction.response.send_message(f"Your Discord account doesn't seem to be linked yet, please do so by running `/link`", ephemeral=True)
 		return
 	handle = user['handle']
-	await interaction.response.send_message(f"No recommendations yet, {handle}.")
+	recommended_problems = Recommend.smart_recommend(handle)
+	if len(recommended_problems) == 0:
+		await interaction.response.send_message(f"Looks like I don't have anything to recommend to you right now... Have you solved any problems yet?")
+		return
+	embed = discord.Embed(title="Here are some problems you should try!", color=discord.Color.blurple())
+	for problem in recommended_problems:
+		name = problem["name"]
+		url = problem["url"]
+		rating = problem["rating"]
+		embed.add_field(name=f"__{name}__", value=f"*{url}*\nRating: **{rating}**", inline=False)
+	
+	await interaction.response.send_message(embed=embed)
 
 	return
 
@@ -262,7 +276,34 @@ def on_command(interaction):
 	return
 
 
+@bot.tree.command(name="duel", description="Challenge an opponent to a duel.")
+@app_commands.describe(handle="Your desired opponent's Codeforces Handle")
+async def unlink(interaction: discord.Interaction, handle: str):
+	on_command(interaction)
+	check_exists = f"""
+SELECT * FROM cf_users
+WHERE discord_id='{interaction.user.id}'
+"""
+	cursor.execute(check_exists)
+	user = cursor.fetchone()
 
+	check_opponent_exists = f"""
+SELECT * FROM cf_users
+WHERE handle='{handle}'
+"""
+	cursor.execute(check_opponent_exists)
+	opp = cursor.fetchone()
+
+	if user == None:
+		await interaction.response.send_message(f"Your Discord account doesn't seem to be linked yet, please do so by running `/link`", ephemeral=True)
+		return
+	
+	if opp == None:
+		await interaction.response.send_message(f"I couldn't find a user in my database named {handle}. Did they link their account with me yet?", ephemeral=True)
+		return
+
+	user_handle = user['handle']
+	opp_handle = opp['handle']
 
 
 def main():
