@@ -4,6 +4,8 @@ import Random
 from flask import Flask, request, jsonify, render_template
 import propelauth_flask as propel
 
+
+
 app = Flask(__name__)
 auth = propel.init_auth("https://69808087.propelauthtest.com", "b7574e339d28d2e617e203f9e417bdbdc8209fea143b558154dc505f40410fc38248e7de23eb0ca7e5bd337365eacba6")
 
