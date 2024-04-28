@@ -1,23 +1,14 @@
 import time
 import Recommend
+import bot_cfrec
+import myapp
+import threading
+import asyncio
 
 def main():
-    start_time = time.time()
-    rating = 800
-    tags = {'math', 'implementation'}
-    num_rec = 3
-    problems = Recommend.pub_recommend(rating, tags, num_rec)
-    for p in problems:
-        print(p)
-        print(Recommend.get_link(p))
+	server_thread = threading.Thread(target=myapp.start_server)
+	server_thread.start()
+	bot_cfrec.start_bot()
 
-    end_time = time.time()
-    exec_time = end_time - start_time
-    print(exec_time)
-
-    test = Recommend.smart_recommend("flashwhite")
-    for t in test:
-        print(t)
-    
-
-main()
+if __name__ == '__main__':
+    main()
