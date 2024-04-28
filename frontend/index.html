@@ -36,10 +36,10 @@
 
 		<div class="row">
 			<div class="col-md-3 text-center">
-				<button type="button" class="btn btn-primary btn-lg">Auto-Recommend</button>
+				<button @click="autoRecommend" type="button" class="btn btn-primary btn-lg">Auto-Recommend</button>
 			</div>
 			<div class="col-md-3 text-center">
-				<button @click="submit" type="button" class="btn btn-primary btn-lg">Recommend a problem</button><br>
+				<button @click="manualRecommend" type="button" class="btn btn-primary btn-lg">Recommend a problem</button><br>
 				{{recommendResponse}}
 			</div>
 			<div class="col-md-2">
@@ -51,13 +51,31 @@
 			<div class="col-md-2 text-center">
 				<button data-bs-toggle="collapse" data-bs-target="#tagsdropdown" type="button" class="btn btn-primary btn-lg">Show tags</button>
 			</div>
-			
+		</div>
+
+		<div id="tagsdropdown" class="collapse" v-html="tagsHTML"></div>
+
+		<br>
+		<div class="row">
+			<div class="col text-center">
+				{{recommendedProblemLink}}
+			</div>
 		</div>
 
 		<br>
+		<div class="row">
+			<div class="col text-center">
+				<button type="button" class="btn btn-primary btn-lg">Campaign</button>
+			</div>
+			<div class="col text-center"></div>
+			<div class="col text-center">
+				<input v-model="opponent" class="form-control" placeholder="Opponent's username">
+			</div>
+			<div class="col text-center">
+				<button type="button" class="btn btn-primary btn-lg">Duel</button>
+			</div>
+		</div>
 
-		<!-- <div id="tagsdropdown" class="collapse"></div> -->
-		<div id="tagsdropdown" class="collapse" v-html="tagsHTML"></div>
 
 		<!-- <div class="row"><div class="col"></div>
 			<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"><label class="form-check-label" for="flexCheckDefault">chinese remainder theorem</label></div></div>
