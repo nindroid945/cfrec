@@ -14,7 +14,20 @@ const account = new Vue({
 	},
 	methods: {
 		linkaccount() {
-			
+			authClient.getAuthenticationInfoOrNull().then((authInfo)=>{
+				if (!authInfo) return
+				let vue = this
+				fetch("http://localhost:5000/api/linkaccount/", {
+					method: "POST",
+					headers: {
+						"Content-type": "application/json; charset=UTF-8",
+						"Authorization": `Bearer ${authInfo.accessToken}`,
+						"CFUsername":vue.cfusername,
+					}
+				})
+				.then((response) => response.text())
+				.then((res) => console.log(res))
+			})
 		},
 	},
 	mounted: function() {
