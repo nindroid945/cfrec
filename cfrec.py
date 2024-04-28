@@ -4,7 +4,10 @@ import problemRec
 def main():
     start_time = time.time()
 
-    p = problemRec.recommend(800, {'math'}, 3)
+    rating = 800
+    tags = {'math', 'implementation', 'blah'}
+    num_rec = 3
+    p = problemRec.recommend(rating, tags, num_rec)
     print(p)
 
     end_time = time.time()

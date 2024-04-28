@@ -35,6 +35,8 @@ def recommend(rating, tags, num):
     reclen = len(probs)
     recprobs = []
     print(reclen)
+    if reclen == 0:
+        return "no problems exist with this tag"
     for i in range(num):
         recprobs.append(probs[random.randint(0, reclen)])
     return(recprobs)
