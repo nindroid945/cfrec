@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 
 # Local Libraries
 import Recommend
+import duel
 
 load_dotenv()
 
@@ -178,7 +179,7 @@ WHERE handle='{handle}'
 	cursor.execute(c)
 	if cursor.fetchone() != None:
 		# user with Handle exists, just update discord_id
-		
+		print(f"User with handle {handle} exists. Updating discord_id to {interaction.user.id}")
 		update = f"""
 UPDATE cf_users
 SET discord_id='{interaction.user.id}'
@@ -188,6 +189,7 @@ WHERE handle='{handle}'
 		con.commit()
 	else:
 		# handle not found, insert discord_id
+		print(f"User with handle {handle} NOT FOUND. Inserting with discord_id: {interaction.user.id}")
 		s = f"""
 INSERT INTO cf_users (handle, discord_id)
 VALUES ('{handle}', '{interaction.user.id}')
@@ -311,6 +313,7 @@ WHERE handle='{handle}'
 	cursor.execute(check_opponent_exists)
 	opp = cursor.fetchone()
 
+
 	if user == None:
 		await interaction.response.send_message(f"Your Discord account doesn't seem to be linked yet, please do so by running `/link`", ephemeral=True)
 		return
@@ -318,11 +321,29 @@ WHERE handle='{handle}'
 	if opp == None:
 		await interaction.response.send_message(f"I couldn't find a user in my database named {handle}. Did they link their account with me yet?", ephemeral=True)
 		return
+	
+	if user['handle'] == opp['handle']:
+		await interaction.response.send_message(f"You can't duel yourself!")
+		return
 
 	user_handle = user['handle']
 	opp_handle = opp['handle']
+	print(f"{user_handle =}, {opp_handle =}")
 
-
+	await interaction.response.defer()
+	recommended_problems = duel.duel_init(user1=user_handle, user2=opp_handle)
+	if len(recommended_problems) == 0:
+		await interaction.response.send_message(f"Looks like I don't have anything to recommend to you right now... Have you solved any problems yet?")
+		return
+	
+	embed = discord.Embed(title="Let the duel begin!", color=discord.Color.red())
+	for num, problem in enumerate(recommended_problems):
+		name = problem["name"]
+		url = problem["url"]
+		rating = problem["rating"]
+		embed.add_field(name=f"{num + 1}. __{name}__", value=f"*{url}*\nRating: **{rating}**", inline=False)
+	
+	await interaction.followup.send(embed=embed)
 
 def main():
 	start_bot()	
