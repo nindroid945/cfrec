@@ -24,8 +24,9 @@ def search():
 def apirecommend():
 	print(request.headers)
 	rating = int(request.headers['Rating'])
-	tags = set(request.headers['Tags'].lower().split(";"))
+	tags = set(request.headers['Tags'].lower().split(";")) - set([''])
 	num = 5
+	# print("Tags", tags)
 
 	response = jsonify(pub_recommend(rating, tags, num))
 	response.headers.add('Access-Control-Allow-Origin', '*')
@@ -46,13 +47,7 @@ def apismartrecommend():
 
 @app.route("/api/daily/")
 def daily():
-	Random.daily()
-	print(request.headers)
-	rating = int(request.headers['Rating'])
-	tags = set(request.headers['Tags'].lower().split(";"))
-	num = 5
-
-	response = jsonify(pub_recommend(rating, tags, num))
+	response = jsonify(Random.daily())
 	response.headers.add('Access-Control-Allow-Origin', '*')
 	return response
 

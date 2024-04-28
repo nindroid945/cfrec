@@ -14,5 +14,3 @@ def daily():
             pool.append(problem)
     index = hash(datetime.today().strftime('%Y-%m-%d')) % len(pool)
     return pool[index]
-
-print(daily())

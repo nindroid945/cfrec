@@ -72,8 +72,10 @@ def pub_recommend(rating: int, tags: set, num: int):
     response_json = response.json()
 
     pool = []
+    print(tags)
 
     for problem in response_json["result"]["problems"]:
+        # print(problem, set(problem["tags"]))
         if ("rating" in problem and problem["rating"] == rating) and (tags.issubset(set(problem["tags"]))):
             problem["url"] = get_link(problem)
             pool.append(problem)
