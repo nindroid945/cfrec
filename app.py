@@ -1,5 +1,5 @@
 from Recommend import smart_recommend, pub_recommend
-from Search import search
+import Search
 from flask import Flask, request, jsonify, render_template
 import propelauth_flask as propel
 
@@ -14,9 +14,13 @@ def home():
 def account():
 	return render_template("account.html")
 
+@app.route("/search/")
+def search():
+	return render_template("search.html")
+
 # def recommend(rating: int, tags: set, num: int):
 @app.route("/api/recommend/")
-def recommend():
+def apirecommend():
 	print(request.headers)
 	rating = int(request.headers['Rating'])
 	tags = set(request.headers['Tags'].lower().split(";"))
@@ -29,7 +33,7 @@ def recommend():
 # def smart_recommend(handle: str) -> list:
 @app.route("/api/smartrecommend/")
 @auth.require_user
-def smartrecommend():
+def apismartrecommend():
 	# handle = database.getHandleFromPropelID(propel.current_user.user_id)
 	# if handle==None: return None
 	handle = "jasonfeng365"
@@ -41,7 +45,7 @@ def smartrecommend():
 
 @app.route("/api/linkaccount/", methods=['POST'])
 @auth.require_user
-def linkaccount():
+def apilinkaccount():
 	username = request.headers['CFUsername']
 	# handle = database.setHandleFromPropelID(propel.current_user.user_id, username)
 	# if handle==None: return "null"
@@ -50,17 +54,16 @@ def linkaccount():
 
 @app.route("/api/getlinkedaccount/")
 @auth.require_user
-def getlinkedaccount():
+def apigetlinkedaccount():
 	# handle = database.getHandleFromPropelID(propel.current_user.user_id)
 	# if handle: return handle
 	return "null"
 
-@app.route("/api/getlinkedaccount/")
-@auth.require_user
-def search():
+@app.route("/api/search/")
+def apisearch():
 	name = request.headers['ProblemName']
 	if not name: return "null"
-	
-	response = jsonify(search(name))
+
+	response = jsonify(Search.search(name))
 	response.headers.add('Access-Control-Allow-Origin', '*')
 	return response
