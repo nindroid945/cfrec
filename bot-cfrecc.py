@@ -1,0 +1,255 @@
+# Standard Libraries
+import requests
+import os
+import datetime
+import sqlite3
+
+# Non-standard Libraries installed with pip
+import discord
+from discord import app_commands
+from discord.utils import get
+from discord.ext import commands, tasks
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+# BOT_ID = int(os.getenv('BOT_ID'))
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+MY_ID = int(os.getenv('MY_ID'))
+
+con = sqlite3.connect("users.db")
+cursor = con.cursor()
+cursor.row_factory = sqlite3.Row
+
+run_time = datetime.time(hour=16, minute=00)
+
+bot = commands.Bot(command_prefix='$', owner_id = MY_ID, intents=discord.Intents.all())
+
+
+@bot.event
+async def on_ready():
+	print("-- Bot is starting up.")
+	
+	print(f"\tTime right now: {datetime.datetime.now()}")
+	print(f"\tDaily task will run once per day at {run_time} UTC")
+	
+	daily_task.start()
+	
+	await bot.tree.sync()
+	activity = discord.Activity(type=discord.ActivityType.competing, name="HackDavis 2024")
+	await bot.change_presence(activity=activity)
+
+	return
+
+		
+@tasks.loop(minutes=5)
+async def daily_task():
+	return
+
+
+@bot.command()
+@commands.dm_only()
+async def sd(ctx):
+	print(f"-- Direct message with {ctx.author.name}: `$sd` called by {ctx.author.name}")
+	#Check to see if it was called by owner.    
+	called_by_owner = await bot.is_owner(ctx.author)
+   
+
+	if called_by_owner == False:
+		return
+
+	await ctx.send("Shutting down. Until next time... :wave:")
+	print()
+	
+	#Then close bot
+	print("-- Bot Shutting Down")
+	await bot.close()
+	print()
+	return
+
+
+
+@bot.tree.command(name="help", description="Shows descriptions for all commands and how to use the bot.")
+async def help_command(interaction: discord.Interaction):
+	on_command(interaction)
+
+	embed = discord.Embed(title='Need help? Look no further!', color=discord.Color.dark_blue(), )
+
+	link_desc = """- Links your Discord account to your Codeforces account. 
+- Because of how Codeforces' API works, you must visit https://codeforces.com/problemset/problem/4/A and submit a Compile Error.	
+- ❗**This command must be called before accessing any features of the bot, and will only work once you submit the Compile Error.**"""
+	embed.add_field(name="__`/link`__", value=link_desc, inline=False)
+
+	recommend_desc = """- Recommends `count` problems for you to attempt, 5 by default. This is based on your profile and completed problems."""
+	embed.add_field(name="__`/recommend <count>`__", value=recommend_desc, inline=False)
+
+
+	await interaction.response.send_message(embed=embed)
+
+	return
+
+
+class FirstSetup(discord.ui.Modal, title='Let\'s get you set up!'):
+	handle = discord.ui.TextInput(label='Your Codeforces Handle', required=True)
+
+	understand = discord.ui.TextInput(label='Please submit a Compile Error to Problem 4A', 
+									  placeholder='Then type \'CONFIRM\' and submit.', 
+									  required=True)
+	
+	async def on_submit(self, interaction: discord.Interaction):
+		await interaction.response.defer()
+
+
+@bot.tree.command(name="link", description="Link your Codeforces handle to your Discord account.")
+async def link(interaction: discord.Interaction):
+	on_command(interaction)
+	
+
+	check_exists = f"""
+SELECT * FROM cf_users
+WHERE discord_id='{interaction.user.id}'
+"""
+	cursor.execute(check_exists)
+	user_before_update = cursor.fetchone()
+
+	if user_before_update != None:	
+		await interaction.response.send_message(f"Your Discord account is already linked to the handle {user_before_update['handle']}", ephemeral=True)
+		return
+	
+	modal = FirstSetup()
+
+	await interaction.response.send_modal(modal)
+
+	errored = await modal.wait()
+
+	print("View finished normally?", not errored)
+
+	if str(modal.understand) != "CONFIRM":
+		print(f"Modal response, {modal.understand = }")
+		await interaction.followup.send("Please run `/link` again and ensure you submit a Compile Error to https://codeforces.com/problemset/problem/4/A and type \'CONFIRM\' in the popup.", ephemeral=True)
+		return
+
+	handle: str = str(modal.handle).strip()
+
+	response = requests.get(f"https://codeforces.com/api/user.status?handle={handle}&from=1&count=1")
+
+	if not response.ok:
+		print(f"Response errored, Code {response.status_code}")
+		await interaction.followup.send("Ran into a HTTPS error, did you enter your handle correctly?", ephemeral=True)
+		return
+	
+	rdict = response.json()['result']
+
+	if len(rdict) != 1 or 'verdict' not in rdict[0]:
+		await interaction.followup.send("It looks like you haven't solved any problems yet. Maybe Codeforces is still processing your submission?", ephemeral=True)
+		return
+	
+	if rdict[0]['problem']['contestId'] != 4 or rdict[0]['problem']['index'] != "A" or rdict[0]['verdict'] != "COMPILATION_ERROR":
+		verdict = rdict[0].get('verdict')
+	
+		print(f"Verdict Error, {verdict = }")
+		await interaction.followup.send("Please run `/link` again and ensure you submit a Compile Error to https://codeforces.com/problemset/problem/4/A and type \'CONFIRM\' in the popup.", ephemeral=True)
+		return
+
+	s = f"""
+INSERT INTO cf_users (handle, discord_id)
+VALUES ('{handle}', '{interaction.user.id}')
+"""
+	cursor.execute(s)
+
+	verify_inserted = f"""
+SELECT * FROM cf_users
+WHERE handle='{handle}'
+"""
+	
+	cursor.execute(verify_inserted)
+	user_after_update = cursor.fetchone()
+	print(f"{user_after_update['discord_id'] = }")
+	if user_after_update['discord_id'] == str(interaction.user.id):
+		await interaction.followup.send("Your account has been linked successfully!", ephemeral=True)
+		con.commit()
+	else:
+		await interaction.followup.send("Something went wrong on our end. Please try again :(", ephemeral=True)
+	
+	return
+
+
+@bot.tree.command(name="unlink", description="Unlinks your Codeforces account.")
+@app_commands.describe(confirm="Type 'CONFIRM' to confirm this action.")
+async def unlink(interaction: discord.Interaction, confirm: str):
+	on_command(interaction)
+	
+	if confirm != "CONFIRM":
+		await interaction.response.send_message("Please type `CONFIRM` in order to unlink.", ephemeral=True)
+	check_exists = f"""
+SELECT * FROM cf_users
+WHERE discord_id='{interaction.user.id}'
+"""
+	cursor.execute(check_exists)
+	user_before_update = cursor.fetchone()
+
+	if user_before_update == None:	
+		await interaction.response.send_message(f"Your Discord account is not linked yet! Do so by running `/link`", ephemeral=True)
+		return
+
+	delete = f"""
+DELETE FROM cf_users
+WHERE discord_id='{str(interaction.user.id)}'
+"""
+	cursor.execute(delete)
+
+	check_exists = f"""
+SELECT * FROM cf_users
+WHERE discord_id='{interaction.user.id}'
+"""
+	cursor.execute(check_exists)
+	user_before_update = cursor.fetchone()
+
+	if user_before_update != None:
+		await interaction.response.send_message("Something went wrong on our end, please try again :(", ephemeral=True)
+	else:
+		con.commit()
+		await interaction.response.send_message("Your account has been unlinked successfully!", ephemeral=True)
+	
+	return
+	
+
+
+@bot.tree.command(name="recommend", description="Recommends a list of problems for you to try next.")
+@app_commands.describe(count="Number of problems to recommend (Default 5).")
+async def recommend(interaction: discord.Interaction, count: int = 5):
+	on_command(interaction)
+
+	check_exists = f"""
+SELECT * FROM cf_users
+WHERE discord_id='{interaction.user.id}'
+"""
+	cursor.execute(check_exists)
+	user = cursor.fetchone()
+
+	if user == None:
+		await interaction.response.send_message(f"Your Discord account doesn't seem to be linked yet, please do so by running `/link`", ephemeral=True)
+		return
+	handle = user['handle']
+	await interaction.response.send_message(f"No recommendations yet, {handle}.")
+
+	return
+
+
+# Audits the current command running along with who called it and where it was called (guild channel/dm channel)
+def on_command(interaction):
+	if(interaction.guild is None):
+		print(f"-- Direct Message with {interaction.user.name}: `/{interaction.command.name}` by {interaction.user.name}")
+	else:
+		print(f"-- {interaction.guild.name}({interaction.guild.id}): `/{interaction.command.name}` by {interaction.user.name}")
+
+	return
+
+
+def main():
+	bot.run(BOT_TOKEN)
+	
+
+if __name__ == '__main__':
+	main()
