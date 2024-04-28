@@ -20,3 +20,5 @@ def combinatorics() -> list:
             {'contestId': 1912, 'index': 'K', 'name': "Kim's Quest", 'type': 'PROGRAMMING', 'rating': 1800, 'tags': ['bitmasks', 'combinatorics', 'dp'], 'url': 'https://codeforces.com/problemset/problem/1912/K'},
             {'contestId': 1777, 'index': 'D', 'name': 'Score of a Tree', 'type': 'PROGRAMMING', 'points': 2000.0, 'rating': 1900, 'tags': ['bitmasks', 'combinatorics', 'dfs and similar', 'dp', 'math', 'probabilities', 'trees'], 'url': 'https://codeforces.com/problemset/problem/1777/D'}
             ]
+def allCampaigns():
+    return [greedy(), combinatorics()]

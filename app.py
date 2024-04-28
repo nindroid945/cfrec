@@ -1,6 +1,7 @@
 from Recommend import smart_recommend, pub_recommend
 import Search
 import Random
+import Campaign
 from flask import Flask, request, jsonify, render_template
 import propelauth_flask as propel
 import sqlite3
@@ -21,6 +22,10 @@ def account():
 @app.route("/search/")
 def search():
 	return render_template("search.html")
+
+@app.route("/campaigns/")
+def campaigns():
+	return render_template("campaigns.html")
 
 # def recommend(rating: int, tags: set, num: int):
 @app.route("/api/recommend/")
@@ -131,5 +136,11 @@ def apisearch():
 	if not name: return "null"
 
 	response = jsonify(Search.search(name))
+	response.headers.add('Access-Control-Allow-Origin', '*')
+	return response
+
+@app.route("/api/getcampaigns/")
+def apicampaigns():
+	response = jsonify(Campaign.allCampaigns())
 	response.headers.add('Access-Control-Allow-Origin', '*')
 	return response
