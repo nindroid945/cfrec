@@ -1,8 +1,3 @@
-import requests
-import json
-import random
-import Recommend
-
 def greedy_pset() -> list:
     return [{'contestId': 996, 'index': 'A', 'name': 'Hit the Lottery', 'type': 'PROGRAMMING', 'points': 500.0, 'rating': 800, 'tags': ['dp', 'greedy'], 'url': 'https://codeforces.com/problemset/problem/996/A'},
             {'contestId': 230, 'index': 'A', 'name': 'Dragons', 'type': 'PROGRAMMING', 'points': 500.0, 'rating': 1000, 'tags': ['greedy', 'sortings'], 'url': 'https://codeforces.com/problemset/problem/230/A'},
