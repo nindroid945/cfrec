@@ -36,10 +36,11 @@
 
 		<div class="row">
 			<div class="col-md-3 text-center">
-				<button @click="submit" type="button" class="btn btn-primary btn-lg">Auto-Recommend</button>
+				<button type="button" class="btn btn-primary btn-lg">Auto-Recommend</button>
 			</div>
 			<div class="col-md-3 text-center">
-				<button type="button" class="btn btn-primary btn-lg">Recommend a problem</button>
+				<button @click="submit" type="button" class="btn btn-primary btn-lg">Recommend a problem</button><br>
+				{{recommendResponse}}
 			</div>
 			<div class="col-md-2">
 				<input v-model="low" type="number" class="form-control" placeholder="Lowest rating">

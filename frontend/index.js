@@ -5,6 +5,7 @@ const maze = new Vue({
 		tagsHTML:"",
 		low:"",
 		high:"",
+		recommendResponse:"",
 	},
 	computed: {
 		lowest(){
@@ -30,16 +31,29 @@ const maze = new Vue({
 		},
 		getQuery() {
 			for (let i=0; i<36; i++) {
-				let checkedValue = document.querySelector('.'+this.toTagFormat(this.tags[i])+':checked').value;
+				let checkedValue = document.getElementById(this.toTagFormat(this.tags[i])).checked;
 				console.log(this.tags[i]+": "+checkedValue)
 			}
 		},
 		validateQuery() {
+			if (this.low == "" || this.high == "") {
+				this.recommendResponse = "Enter a range of problem ratings"
+				return false
+			}
+			this.low = Math.round(Number(this.low))
+			this.high = Math.round(Number(this.high))
+			
+			if (this.low > this.high) this.recommendResponse = "Highest must be greater than lowest"
+			else if (this.low < 800 || this.high > 3500) this.recommendResponse = "Ratings must be between 800 and 3500"
+			else this.recommendResponse = ""
 
+			return this.recommendResponse == ""
 		},
 		submit() {
 			console.log("Submit pressed!")
-			
+			if (!this.validateQuery()) return;
+
+			this.getQuery()
 		},
 	},
 	mounted: function() {
