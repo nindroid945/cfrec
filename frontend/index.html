@@ -53,13 +53,29 @@
 			</div>
 		</div>
 
-		<br>
-
-		{{recommendedProblemLink}}
-
-		<br>
-
 		<div id="tagsdropdown" class="collapse" v-html="tagsHTML"></div>
+
+		<br>
+		<div class="row">
+			<div class="col text-center">
+				{{recommendedProblemLink}}
+			</div>
+		</div>
+
+		<br>
+		<div class="row">
+			<div class="col text-center">
+				<button type="button" class="btn btn-primary btn-lg">Campaign</button>
+			</div>
+			<div class="col text-center"></div>
+			<div class="col text-center">
+				<input v-model="opponent" class="form-control" placeholder="Opponent's username">
+			</div>
+			<div class="col text-center">
+				<button type="button" class="btn btn-primary btn-lg">Duel</button>
+			</div>
+		</div>
+
 
 		<!-- <div class="row"><div class="col"></div>
 			<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"><label class="form-check-label" for="flexCheckDefault">chinese remainder theorem</label></div></div>

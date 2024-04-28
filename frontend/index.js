@@ -6,7 +6,8 @@ const maze = new Vue({
 		low:"",
 		high:"",
 		recommendResponse:"",
-		recommendProblemLink:"",
+		recommendedProblemLink:"",
+		opponent:"",
 	},
 	computed: {
 		lowest(){
@@ -18,7 +19,7 @@ const maze = new Vue({
 			return string.toLowerCase().replace(" ", "-")
 		},
 		generateSingleTagRow(startIdx) {
-			let res = ''
+			let res = '<br>'
 			res += '<div class="row"><div class="col"></div>'
 			for (let i=startIdx; i<startIdx+6; i++)
 				res += '<div class="col"><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="'+this.toTagFormat(this.tags[i])+'"><label class="form-check-label" for="'+this.toTagFormat(this.tags[i])+'">'+this.tags[i]+'</label></div></div>'
@@ -54,13 +55,14 @@ const maze = new Vue({
 			return "69420"
 		},
 		autoRecommend() {
-			let problemLink = ""
-			this.recommendProblemLink = this.setRecommendedProblem(problemLink)
+			// let problemLink = ""
+			this.recommendedProblemLink = "69420"
 		},
 		manualRecommend() {
 			if (!this.validateQuery()) return;
 
-			let problemLink = this.getQueryLink()
+			// let problemLink = this.getQueryLink()
+			this.recommendedProblemLink = "69420"
 		},
 	},
 	mounted: function() {
