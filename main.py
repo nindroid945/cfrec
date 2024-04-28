@@ -14,6 +14,10 @@ def main():
     end_time = time.time()
     exec_time = end_time - start_time
     print(exec_time)
+
+    test = Recommend.smart_recommend("flashwhite")
+    for t in test:
+        print(t)
     
 
 main()
