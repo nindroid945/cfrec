@@ -3,7 +3,6 @@ import Recommend
 
 def main():
     start_time = time.time()
-
     rating = 800
     tags = {'math', 'implementation'}
     num_rec = 3
