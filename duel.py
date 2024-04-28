@@ -58,8 +58,8 @@ def duel_init(nums = 5, mins = 45, contestRating = 800, user1 = None, user2 = No
     
     duel_check(user1, user2, ids, solved)
     print("contest has finished!")
-    # print(standings)
-    return problem
+    #print(problems)
+    return problems
 
 def duel_check(user1, user2, ids, sol):
     #check for new submission every x seconds, if user1 or user2 is submitter
