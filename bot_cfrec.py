@@ -305,6 +305,7 @@ WHERE handle='{handle}'
 	user_handle = user['handle']
 	opp_handle = opp['handle']
 
+	
 
 def main():
 	start_bot()	
