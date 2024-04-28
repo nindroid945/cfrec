@@ -39,7 +39,7 @@ def smart_recommend(handle: str) -> list:
                     tag_count[t] = 1
 
     avg_difficulty = tot_difficulty // len(solved)
-    print(f"{handle}'s average difficulty solved is {avg_difficulty}")
+    #print(f"{handle}'s average difficulty solved is {avg_difficulty}")
 
     with open("problemset.json", "r") as problemset:
         data = json.load(problemset)
@@ -48,13 +48,11 @@ def smart_recommend(handle: str) -> list:
     a = [[key, tag_count[key]] for key in tag_count]
     a.sort(key=lambda x: x[1])
     tags = a[:min(5, len(a))]
-    print(tags)
 
     # get potential recommend problems
     tagged = []
     untagged = []
 
-    print(avg_difficulty-200, max_difficulty+100)
     for pid, problem in data.items():
         if "rating" in problem and avg_difficulty-200 <= problem["rating"] <= max_difficulty+200 and pid not in solved:
             for t in problem["tags"]:
