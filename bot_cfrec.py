@@ -18,13 +18,20 @@ load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 MY_ID = int(os.getenv('MY_ID'))
 
-con = sqlite3.connect("users.db")
-cursor = con.cursor()
-cursor.row_factory = sqlite3.Row
-
-run_time = datetime.time(hour=16, minute=00)
+con = cursor = run_time = None
 
 bot = commands.Bot(command_prefix='$', owner_id = MY_ID, intents=discord.Intents.all())
+
+def start_bot():
+	con = sqlite3.connect("users.db")
+	cursor = con.cursor()
+	cursor.row_factory = sqlite3.Row
+
+	run_time = datetime.time(hour=16, minute=00)
+
+
+	bot.run(BOT_TOKEN)
+
 
 
 @bot.event
@@ -42,11 +49,16 @@ async def on_ready():
 
 	return
 
-		
+
 @tasks.loop(minutes=5)
 async def daily_task():
 	return
 
+
+async def shutdown_aux():
+	print("-- Bot Shutting Down")
+	await bot.close()
+	return
 
 @bot.command()
 @commands.dm_only()
@@ -63,8 +75,7 @@ async def sd(ctx):
 	print()
 	
 	#Then close bot
-	print("-- Bot Shutting Down")
-	await bot.close()
+	await shutdown_aux()
 	print()
 	return
 
@@ -80,6 +91,10 @@ async def help_command(interaction: discord.Interaction):
 - Because of how Codeforces' API works, you must visit https://codeforces.com/problemset/problem/4/A and submit a Compile Error.	
 - ❗**This command must be called before accessing any features of the bot, and will only work once you submit the Compile Error.**"""
 	embed.add_field(name="__`/link`__", value=link_desc, inline=False)
+
+	unlink_desc = """- Unlinks your Discord account and Codeforces account. Type CONFIRM to confirm this action."""
+	embed.add_field(name="__`/unlink` <CONFIRM>__", value=unlink_desc, inline=False)
+
 
 	recommend_desc = """- Recommends `count` problems for you to attempt, 5 by default. This is based on your profile and completed problems."""
 	embed.add_field(name="__`/recommend <count>`__", value=recommend_desc, inline=False)
@@ -247,9 +262,11 @@ def on_command(interaction):
 	return
 
 
+
+
+
 def main():
-	bot.run(BOT_TOKEN)
-	
+	start_bot()	
 
 if __name__ == '__main__':
 	main()
