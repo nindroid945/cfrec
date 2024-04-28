@@ -6,6 +6,7 @@ const maze = new Vue({
 		low:"",
 		high:"",
 		recommendResponse:"",
+		recommendProblemLink:"",
 	},
 	computed: {
 		lowest(){
@@ -42,18 +43,24 @@ const maze = new Vue({
 			}
 			this.low = Math.round(Number(this.low))
 			this.high = Math.round(Number(this.high))
-			
+
 			if (this.low > this.high) this.recommendResponse = "Highest must be greater than lowest"
 			else if (this.low < 800 || this.high > 3500) this.recommendResponse = "Ratings must be between 800 and 3500"
 			else this.recommendResponse = ""
 
 			return this.recommendResponse == ""
 		},
-		submit() {
-			console.log("Submit pressed!")
+		getLink() {
+			return "69420"
+		},
+		autoRecommend() {
+			let problemLink = ""
+			this.recommendProblemLink = this.setRecommendedProblem(problemLink)
+		},
+		manualRecommend() {
 			if (!this.validateQuery()) return;
 
-			this.getQuery()
+			let problemLink = this.getQueryLink()
 		},
 	},
 	mounted: function() {
