@@ -43,44 +43,24 @@ def smart_recommend(handle: str) -> list:
 
     with open("problemset.json", "r") as problemset:
         data = json.load(problemset)
-    
-    # fetch the 5 tags that have the least work in it
-    a = [[key, tag_count[key]] for key in tag_count]
-    a.sort(key=lambda x: x[1])
-    tags = a[:min(5, len(a))]
 
     # get potential recommend problems
-    tagged = []
-    untagged = []
+    pool = []
 
     for pid, problem in data.items():
-        if "rating" in problem and avg_difficulty-200 <= problem["rating"] <= max_difficulty+200 and pid not in solved:
-            for t in problem["tags"]:
-                if t in tags:
-                    tagged.append(problem) # one of the least-done tags
-                    break
-            else:
-                untagged.append(problem) # a never-done tag
+        if "rating" in problem and avg_difficulty-200 <= problem["rating"] <= max_difficulty+100 and pid not in solved:
+            problem["url"] = get_link(problem)
+            pool.append(problem)
     
-    if len(tagged) == 0 and len(untagged) == 0:
-        return "No problems found."
-    elif len(tagged) == 0:
-        return untagged[:min(5, len(untagged))]
-    elif len(untagged) == 0:
-        return tagged[:min(5, len(tagged))]
+    if len(pool) < 5:
+        return pool
     
     # randomly pick some 5 problems from both tagged and untagged
     out = []
-    while len(out) < min(5, len(untagged)+len(tagged)):
-        choice = random.randint(0,1)
-        if choice == 0: # untagged
-            toadd = untagged[random.randint(0, len(untagged)-1)]
-            if toadd not in out:
-                out.append(toadd)
-        else:
-            toadd = tagged[random.randint(0, len(tagged))]
-            if toadd not in out:
-                out.append(toadd)
+    while len(out) < 5:
+        toadd = pool[random.randint(0, len(pool)-1)]
+        if toadd not in out:
+            out.append(toadd)
     return out
         
 def pub_recommend(rating: int, tags: set, num: int):
@@ -95,6 +75,7 @@ def pub_recommend(rating: int, tags: set, num: int):
 
     for problem in response_json["result"]["problems"]:
         if ("rating" in problem and problem["rating"] == rating) and (set(problem["tags"]) == tags):
+            problem["url"] = get_link(problem)
             pool.append(problem)
 
     if len(pool) == 0:

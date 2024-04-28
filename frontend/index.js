@@ -31,11 +31,13 @@ const maze = new Vue({
 			for (let i=0; i<36; i+=6) res += this.generateSingleTagRow(i)
 			return res
 		},
-		getQuery() {
-			for (let i=0; i<36; i++) {
-				let checkedValue = document.getElementById(this.toTagFormat(this.tags[i])).checked;
-				console.log(this.tags[i]+": "+checkedValue)
-			}
+		getQueryTags() {
+			let tags = []
+
+			for (let i=0; i<36; i++)
+				if (document.getElementById(this.toTagFormat(this.tags[i])).checked)
+					tags.push(this.tags[i].toLowerCase())
+			return tags
 		},
 		validateQuery() {
 			if (this.low == "" || this.high == "") {
@@ -51,17 +53,23 @@ const maze = new Vue({
 
 			return this.recommendResponse == ""
 		},
-		getLink() {
-			return "69420"
+		getSmartRecommendation(username) {
+			let url = "http://127.0.0.1:5000/api/smartrecommend/"+username
+
+			fetch(url).then(function(res) {
+				res.json().then(res=>{
+					console.log(res)
+				})
+			})
 		},
 		autoRecommend() {
+			console.log(this.getSmartRecommendation("jasonfeng365"))
 			// let problemLink = ""
 			this.recommendedProblemLink = "69420"
 		},
 		manualRecommend() {
 			if (!this.validateQuery()) return;
 
-			// let problemLink = this.getQueryLink()
 			this.recommendedProblemLink = "69420"
 		},
 	},
