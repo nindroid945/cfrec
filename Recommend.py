@@ -49,6 +49,7 @@ def smart_recommend(handle: str) -> list:
 
     for pid, problem in data.items():
         if "rating" in problem and avg_difficulty-200 <= problem["rating"] <= max_difficulty+100 and pid not in solved:
+            problem["url"] = get_link(problem)
             pool.append(problem)
     
     if len(pool) < 5:
@@ -74,6 +75,7 @@ def pub_recommend(rating: int, tags: set, num: int):
 
     for problem in response_json["result"]["problems"]:
         if ("rating" in problem and problem["rating"] == rating) and (set(problem["tags"]) == tags):
+            problem["url"] = get_link(problem)
             pool.append(problem)
 
     if len(pool) == 0:

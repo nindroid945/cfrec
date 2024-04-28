@@ -56,10 +56,11 @@ const maze = new Vue({
 		getSmartRecommendation(username) {
 			let url = "http://127.0.0.1:5000/api/smartrecommend/"+username
 
-			var xmlHttp = new XMLHttpRequest();
-			xmlHttp.open( "GET", url, false ); // false for synchronous request
-			xmlHttp.send(null);
-			return xmlHttp.responseText;
+			fetch(url).then(function(res) {
+				res.json().then(res=>{
+					console.log(res)
+				})
+			})
 		},
 		autoRecommend() {
 			console.log(this.getSmartRecommendation("jasonfeng365"))

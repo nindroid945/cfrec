@@ -1,6 +1,6 @@
 from Recommend import smart_recommend, pub_recommend
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # def recommend(rating: int, tags: set, num: int):
@@ -15,5 +15,7 @@ def recommend():
 # def smart_recommend(handle: str) -> list:
 @app.route("/api/smartrecommend/<handle>")
 def smartrecommend(handle):
-	print(handle)
-	return smart_recommend(handle)
+	# print(handle)
+	response = jsonify(smart_recommend(handle))
+	response.headers.add('Access-Control-Allow-Origin', '*')
+	return response
