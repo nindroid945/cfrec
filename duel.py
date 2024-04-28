@@ -90,9 +90,9 @@ def duel_check(user1, user2, ids, sol):
         #print("user2 has solved a problem!")
     """
 
-    return sol # array of length nums
+    return sol # array of length nums representing who solved which problems.
 
-duel_init(5, 1000, 'nindroid945', 'flashwhite')
+duel_init(5, 1000, 'nindroid945', 'nindroid945')
 # codes = ['1454B', '104064G', '263A', '344A', '599A']
 # sol = [None, None, None, None, None]
 # duel_check('nindroid945', 'flashwhite', codes, sol)
