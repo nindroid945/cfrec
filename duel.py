@@ -4,7 +4,7 @@ import Recommend
 import requests
 import random
 
-def duel_init(nums = 5, mins = 45, contestRating = 800, user1 = None, user2 = None):
+def duel_init(nums = 5, contestRating = 800, user1 = None, user2 = None):
     contestMin = max(800, contestRating - 200)
     contestMax = min(3000, contestRating + 200)
     #get num problems and start timer
@@ -58,8 +58,8 @@ def duel_init(nums = 5, mins = 45, contestRating = 800, user1 = None, user2 = No
     
     duel_check(user1, user2, ids, solved)
     print("contest has finished!")
-    # print(standings)
-    return problem
+    #print(problems)
+    return problems
 
 def duel_check(user1, user2, ids, sol):
     #check for new submission every x seconds, if user1 or user2 is submitter
@@ -92,7 +92,7 @@ def duel_check(user1, user2, ids, sol):
 
     return sol # array of length nums
 
-duel_init(5, 0.2, 1000, 'nindroid945', 'flashwhite')
+duel_init(5, 1000, 'nindroid945', 'flashwhite')
 # codes = ['1454B', '104064G', '263A', '344A', '599A']
 # sol = [None, None, None, None, None]
 # duel_check('nindroid945', 'flashwhite', codes, sol)

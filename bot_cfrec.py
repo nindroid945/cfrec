@@ -171,11 +171,28 @@ WHERE discord_id='{interaction.user.id}'
 		await interaction.followup.send("Please run `/link` again and ensure you submit a Compile Error to https://codeforces.com/problemset/problem/4/A and type \'CONFIRM\' in the popup.", ephemeral=True)
 		return
 
-	s = f"""
+	c = f"""
+SELECT * FROM cf_users
+WHERE handle='{handle}'
+"""
+	cursor.execute(c)
+	if cursor.fetchone() != None:
+		# user with Handle exists, just update discord_id
+		
+		update = f"""
+UPDATE cf_users
+SET discord_id='{interaction.user.id}'
+WHERE handle='{handle}'
+"""
+		cursor.execute(update)
+		con.commit()
+	else:
+		# handle not found, insert discord_id
+		s = f"""
 INSERT INTO cf_users (handle, discord_id)
 VALUES ('{handle}', '{interaction.user.id}')
 """
-	cursor.execute(s)
+		cursor.execute(s)
 
 	verify_inserted = f"""
 SELECT * FROM cf_users
@@ -305,7 +322,7 @@ WHERE handle='{handle}'
 	user_handle = user['handle']
 	opp_handle = opp['handle']
 
-	
+
 
 def main():
 	start_bot()	
