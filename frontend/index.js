@@ -54,23 +54,41 @@ const maze = new Vue({
 			return this.recommendResponse == ""
 		},
 		getSmartRecommendation(username) {
+			let text = ""
+			text += "Recommended problems: "
 			let url = "http://127.0.0.1:5000/api/smartrecommend/"+username
+
+			let vue = this
 
 			fetch(url).then(function(res) {
 				res.json().then(res=>{
 					console.log(res)
+					for (let i=0; i<res.length; i++) {
+						text += '<a href="'+res[i].url+'">'+res[i].name+" ("+res[i].rating+')</a> '
+						// console.log(res[i].url)
+					}
+
+					vue.recommendedProblemLink = text
+					console.log(text)
+					return text
 				})
 			})
 		},
 		autoRecommend() {
-			console.log(this.getSmartRecommendation("jasonfeng365"))
 			// let problemLink = ""
-			this.recommendedProblemLink = "69420"
+			// let rec = this.getSmartRecommendation("jasonfeng365")
+			// console.log(rec)
+			// this.recommendedProblemLink = rec
+			// this.$forceUpdate()
+			// this.recommendedProblemLink = "69420"
+			this.getSmartRecommendation("jasonfeng365")
 		},
 		manualRecommend() {
+			// this.recommendedProblemLink+="12"
 			if (!this.validateQuery()) return;
 
 			this.recommendedProblemLink = "69420"
+			
 		},
 	},
 	mounted: function() {
