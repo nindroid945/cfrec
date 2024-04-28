@@ -36,19 +36,20 @@
 
 		<div class="row">
 			<div class="col-md-3 text-center">
-				<button v-if="loggedIn" @click="autoRecommend" type="button" class="btn btn-primary btn-lg">Auto-Recommend</button>
-				<button v-if="!loggedIn" @click="autoRecommend" type="button" class="btn btn-primary btn-lg" disabled>Auto-Recommend</button>
+				<button v-if="autoRecommendEnabled" @click="autoRecommend" type="button" class="btn btn-primary btn-lg">Auto-Recommend</button>
+				<button v-if="!autoRecommendEnabled" @click="autoRecommend" type="button" class="btn btn-primary btn-lg" disabled>Auto-Recommend</button>
 			</div>
 			<div class="col-md-2"></div>
-			<div class="col-md-3 text-center">
-				<button @click="manualRecommend" type="button" class="btn btn-primary btn-lg">Recommend a problem</button><br>
-				<span v-html="recommendResponse"></span>
+			
+			<div class="col-md-2 text-center">
+				<button data-bs-toggle="collapse" data-bs-target="#tagsdropdown" type="button" class="btn btn-success btn-lg">Show tags</button>
 			</div>
 			<div class="col-md-2">
 				<input v-model="rating" type="number" class="form-control" placeholder="Rating">
 			</div>
-			<div class="col-md-2 text-center">
-				<button data-bs-toggle="collapse" data-bs-target="#tagsdropdown" type="button" class="btn btn-success btn-lg">Show tags</button>
+			<div class="col-md-3 text-center">
+				<button @click="manualRecommend" type="button" class="btn btn-primary btn-lg">Recommend a problem</button><br>
+				<span v-html="recommendResponse"></span>
 			</div>
 		</div>
 

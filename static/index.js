@@ -12,7 +12,7 @@ const homepage = new Vue({
 		recommendedProblemLink:"",
 		opponent:"",
 		loginButtonText:"Login/Signup",
-		loggedIn:false,
+		autoRecommendEnabled:false,
 		rating:"",
 	},
 	computed: {
@@ -124,11 +124,21 @@ const homepage = new Vue({
 	mounted: function() {
 		// console.log(window.location.href.split("?"))
 		this.tagsHTML = this.generateTags()
+		let vue = this
 
 		authClient.getAuthenticationInfoOrNull().then((authInfo)=>{
 			if (!authInfo) return
-			this.loggedIn = true
-			this.loginButtonText = "Welcome!"
+
+			fetch("http://localhost:5000/api/getlinkedaccount/", {
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `Bearer ${authInfo.accessToken}`
+				}
+			}).then(function(res) {
+				res.text().then(res=>{
+					vue.autoRecommendEnabled = res != "null"
+				})
+			})
 		})
 	}
 });

@@ -1,4 +1,5 @@
 from Recommend import smart_recommend, pub_recommend
+from Search import search
 from flask import Flask, request, jsonify, render_template
 import propelauth_flask as propel
 
@@ -43,7 +44,7 @@ def smartrecommend():
 def linkaccount():
 	username = request.headers['CFUsername']
 	# handle = database.setHandleFromPropelID(propel.current_user.user_id, username)
-	# if handle==None: return None
+	# if handle==None: return "null"
 	# print(handle)
 	return "Success"
 
@@ -52,4 +53,14 @@ def linkaccount():
 def getlinkedaccount():
 	# handle = database.getHandleFromPropelID(propel.current_user.user_id)
 	# if handle: return handle
-	return "jasonfeng365"
+	return "null"
+
+@app.route("/api/getlinkedaccount/")
+@auth.require_user
+def search():
+	name = request.headers['ProblemName']
+	if not name: return "null"
+	
+	response = jsonify(search(name))
+	response.headers.add('Access-Control-Allow-Origin', '*')
+	return response

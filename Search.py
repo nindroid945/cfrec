@@ -1,5 +1,6 @@
 import requests
 import re
+from Recommend import get_link
 
 def search(query: str):
     response = requests.get("https://codeforces.com/api/problemset.problems?")
@@ -12,5 +13,6 @@ def search(query: str):
             if re.search(t, problem["name"].lower()) == None:
                 break
         else:
+            problem["url"] = get_link(problem)
             out.append(problem)
     return out
