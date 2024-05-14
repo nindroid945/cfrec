@@ -3,6 +3,7 @@ import requests
 import os
 import datetime
 import sqlite3
+import time
 
 # Non-standard Libraries installed with pip
 import discord
@@ -342,8 +343,76 @@ WHERE handle='{handle}'
 		url = problem["url"]
 		rating = problem["rating"]
 		embed.add_field(name=f"{num + 1}. __{name}__", value=f"*{url}*\nRating: **{rating}**", inline=False)
+	#embed.add_field(name="Erummm...", value=f"{solved}", inline=False)
 	
 	await interaction.followup.send(embed=embed)
+	# duel_time(recommended_problems, user_handle, opp_handle, 1)
+	mins = 0.2
+	# channel = bot.get_channel(1234721887737745478)
+	# channel = interaction.channel.id
+	seconds = mins * 60
+	max_time = mins * 60
+	ids = []
+	solved = []
+	for p in recommended_problems:
+		ids.append(str(p['contestId']) + str(p["index"]))
+		solved.append(None)
+	print("starting timer")
+	start = time.time()
+	# interval = 5
+	while seconds > 0:
+		time.sleep(1)
+		if seconds % 2 == 0:
+			prob, u = duel.duel_check(user_handle, opp_handle, ids, solved)
+			print(f"{solved[prob]} = {u}")
+			if prob != None and (u == 0 or u == 1) and solved[prob] != u:
+				solved[prob] = u
+				# await channel.send(f"{u} has solved the {prob}th problem! :)")
+				await interaction.followup.send(f"{u} has solved the {prob}th problem! :)")
+		# if interval == 0:
+		# 	interval = 5
+		# 	await channel.send(solved)
+		# interval -= 1
+		seconds -= 1
+		curtime = time.time()
+		if curtime - start > max_time:
+			# print(curtime - start)
+			break
+	end = time.time()
+	# print("contest done!")
+	await interaction.followup.send(solved)
+	print(end - start)
+
+# async def duel_checker():
+# 	await bot.wait_until_ready()
+# 	counter = 0
+# 	channel = bot.get_channel(id=1234721887737745478) # replace with channel_id
+# 	while not bot.is_closed():
+# 		counter += 1
+# 		await channel.send(counter)
+# 		await bot.sleep(60) # task runs every 60 seconds
+
+# def duel_time(probs, user1, user2, mins):
+# 	channel = bot.get_channel(id=1234721887737745478)
+# 	seconds = mins * 60
+# 	ids = []
+# 	solved = []
+# 	for p in probs:
+# 		ids.append(str(p['contestId']) + str(p["index"]))
+# 		solved.append(None)
+	
+# 	print("starting timer")
+# 	interval = 5
+# 	while seconds > 0:
+# 		time.sleep(1)
+# 		if interval == 0:
+# 			interval = 5
+# 			channel.send("hi")
+# 		interval -= 1
+# 		seconds -= 1
+	
+# 	solved = duel.duel_check(user1, user2, ids, solved)
+# 	return solved
 
 def main():
 	start_bot()	
