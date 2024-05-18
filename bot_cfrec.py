@@ -38,7 +38,7 @@ def start_bot():
 
 	bot.run(BOT_TOKEN)
 
-
+in_duel = []
 
 @bot.event
 async def on_ready():
@@ -295,10 +295,25 @@ def on_command(interaction):
 
 	return
 
+@bot.tree.command(name="resign", description="Resign from your ongoing duel.")
+async def unlink(interaction: discord.Interaction):
+	on_command(interaction)
+	check_exists = f"""
+SELECT * FROM cf_users
+WHERE discord_id='{interaction.user.id}'
+"""
+	cursor.execute(check_exists)
+	user = cursor.fetchone()
+	for pair in in_duel:
+		if user['handle'] in pair:
+			in_duel.remove(pair)
+			await interaction.response.send_message(f"You have resigned from the duel.", ephemeral=True)
+			return
+
 
 @bot.tree.command(name="duel", description="Challenge an opponent to a duel.")
-@app_commands.describe(handle="Your desired opponent's Codeforces Handle")
-async def unlink(interaction: discord.Interaction, handle: str):
+@app_commands.describe(handle="Your desired opponent's Codeforces Handle", rating="The average rating of the duel")
+async def unlink(interaction: discord.Interaction, handle: str, rating: int):
 	on_command(interaction)
 	check_exists = f"""
 SELECT * FROM cf_users
@@ -323,16 +338,28 @@ WHERE handle='{handle}'
 		await interaction.response.send_message(f"I couldn't find a user in my database named {handle}. Did they link their account with me yet?", ephemeral=True)
 		return
 	
-	if user['handle'] == opp['handle']:
+	user_handle = user['handle']
+	opp_handle = opp['handle']
+
+	if user_handle == opp_handle:
 		await interaction.response.send_message(f"You can't duel yourself!")
 		return
 
-	user_handle = user['handle']
-	opp_handle = opp['handle']
+	if user_handle in in_duel:
+		await interaction.response.send_message(f"{user_handle} is already in a duel! Use /resign to abandon the current duel!")
+		return
+
+	if opp_handle in in_duel:
+		await interaction.response.send_message(f"{opp_handle} is already in a duel! Use /resign to abandon the current duel!")
+		return
+
+	# user_handle = user['handle']
+	# opp_handle = opp['handle']
 	print(f"{user_handle =}, {opp_handle =}")
+	in_duel.append((user_handle, opp_handle))
 
 	await interaction.response.defer()
-	recommended_problems = duel.duel_init(user1=user_handle, user2=opp_handle)
+	recommended_problems = duel.duel_init(user1=user_handle, user2=opp_handle, contestRating=rating)
 	if len(recommended_problems) == 0:
 		await interaction.response.send_message(f"Looks like I don't have anything to recommend to you right now... Have you solved any problems yet?")
 		return
@@ -347,7 +374,7 @@ WHERE handle='{handle}'
 	
 	await interaction.followup.send(embed=embed)
 	# duel_time(recommended_problems, user_handle, opp_handle, 1)
-	mins = 0.2
+	mins = 45
 	# channel = bot.get_channel(1234721887737745478)
 	# channel = interaction.channel.id
 	seconds = mins * 60
