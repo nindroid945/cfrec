@@ -4,6 +4,7 @@ import os
 import datetime
 import sqlite3
 import time
+import datetime
 
 # Non-standard Libraries installed with pip
 import discord
@@ -370,6 +371,8 @@ WHERE handle='{handle}'
 		url = problem["url"]
 		rating = problem["rating"]
 		embed.add_field(name=f"{num + 1}. __{name}__", value=f"*{url}*\nRating: **{rating}**", inline=False)
+	
+	embed.add_field(name=f"Start Time: {datetime.datetime.now()}", value=f"You have 45 minutes!", inline=False)
 	#embed.add_field(name="Erummm...", value=f"{solved}", inline=False)
 	
 	await interaction.followup.send(embed=embed)

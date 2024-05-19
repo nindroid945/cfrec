@@ -102,8 +102,8 @@ def duel_check(user1, user2, ids, sol):
         sol[i] = 1
         #print("user2 has solved a problem!")
     """
-    prob = 0
-    user = 0
+    # prob = 0
+    # user = 0
     return prob, user # array of length nums representing who solved which problems.
 
 # duel_init(5, 0.5, 1000, 'nindroid945', 'flashwhite')
