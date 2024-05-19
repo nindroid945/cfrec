@@ -1,12 +1,11 @@
 # Standard Libraries
-import requests
 import os
 import datetime
 import sqlite3
 import time
-import datetime
 
 # Non-standard Libraries installed with pip
+import requests
 import discord
 from discord import app_commands
 from discord.utils import get
@@ -377,41 +376,41 @@ WHERE handle='{handle}'
 	
 	await interaction.followup.send(embed=embed)
 	# duel_time(recommended_problems, user_handle, opp_handle, 1)
-	mins = 45
-	# channel = bot.get_channel(1234721887737745478)
-	# channel = interaction.channel.id
-	seconds = mins * 60
-	max_time = mins * 60
-	ids = []
-	solved = []
-	for p in recommended_problems:
-		ids.append(str(p['contestId']) + str(p["index"]))
-		solved.append(None)
-	print("starting timer")
-	start = time.time()
-	# interval = 5
-	while seconds > 0:
-		time.sleep(1)
-		if seconds % 2 == 0:
-			prob, u = duel.duel_check(user_handle, opp_handle, ids, solved)
-			print(f"{solved[prob]} = {u}")
-			if prob != None and (u == 0 or u == 1) and solved[prob] != u:
-				solved[prob] = u
-				# await channel.send(f"{u} has solved the {prob}th problem! :)")
-				await interaction.followup.send(f"{u} has solved the {prob}th problem! :)")
-		# if interval == 0:
-		# 	interval = 5
-		# 	await channel.send(solved)
-		# interval -= 1
-		seconds -= 1
-		curtime = time.time()
-		if curtime - start > max_time:
-			# print(curtime - start)
-			break
-	end = time.time()
-	# print("contest done!")
-	await interaction.followup.send(solved)
-	print(end - start)
+	# mins = 45
+	# # channel = bot.get_channel(1234721887737745478)
+	# # channel = interaction.channel.id
+	# seconds = mins * 60
+	# max_time = mins * 60
+	# ids = []
+	# solved = []
+	# for p in recommended_problems:
+	# 	ids.append(str(p['contestId']) + str(p["index"]))
+	# 	solved.append(None)
+	# print("starting timer")
+	# start = time.time()
+	# # interval = 5
+	# while seconds > 0:
+	# 	time.sleep(1)
+	# 	if seconds % 2 == 0:
+	# 		prob, u = duel.duel_check(user_handle, opp_handle, ids, solved)
+	# 		print(f"{solved[prob]} = {u}")
+	# 		if prob != None and (u == 0 or u == 1) and solved[prob] != u:
+	# 			solved[prob] = u
+	# 			# await channel.send(f"{u} has solved the {prob}th problem! :)")
+	# 			await interaction.followup.send(f"{u} has solved the {prob}th problem! :)")
+	# 	# if interval == 0:
+	# 	# 	interval = 5
+	# 	# 	await channel.send(solved)
+	# 	# interval -= 1
+	# 	seconds -= 1
+	# 	curtime = time.time()
+	# 	if curtime - start > max_time:
+	# 		# print(curtime - start)
+	# 		break
+	# end = time.time()
+	# # print("contest done!")
+	# await interaction.followup.send(solved)
+	# print(end - start)
 
 # async def duel_checker():
 # 	await bot.wait_until_ready()
